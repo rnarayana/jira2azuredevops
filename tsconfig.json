@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declarationDir": "dist.d",
+    "incremental": true,
+    "declaration": true,
+    "baseUrl": "./",
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    },
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "target": "es6",
+    "allowJs": false,
+    "noEmitOnError": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": false,
+    "strict": true,
+    "removeComments": true,
+    "importHelpers": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts", "src/appsettings.json"],
+  "exclude": ["node_modules", "dist", "dist.d"]
+}

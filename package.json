@@ -1,0 +1,42 @@
+{
+  "name": "jira2azuredevops",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rnarayana/jira2azuredevops.git"
+  },
+  "keywords": [
+    "jira",
+    "azuredevops"
+  ],
+  "author": "Narayana Rengaswamy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rnarayana/jira2azuredevops/issues"
+  },
+  "homepage": "https://github.com/rnarayana/jira2azuredevops#readme",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean-packages": "npx rimraf node_modules",
+    "clean": "npx rimraf dist dist.d tsconfig.tsbuildinfo",
+    "compile": "tsc -b tsconfig.json",
+    "startDev": "ts-node-dev --respawn ./src/index.ts",
+    "start": "node ./dist/index.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "lodash": "^4.17.15",
+    "moment": "^2.25.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.1",
+    "ts-node": "^8.10.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.9.2"
+  }
+}
