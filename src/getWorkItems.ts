@@ -2,7 +2,9 @@ import { httpPost } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
 
-export async function getAllWorkItemsInBoards(): Promise<DevOpsJiraMapping[]> {
+export async function getAllWorkItemsInBoards(
+  limit: number = 99999
+): Promise<DevOpsJiraMapping[]> {
   const getAllWorkItemsUrl = `${repoConfig.boardsWorkItemsUrl}/wiql${repoConfig.azureApiVersion}`;
   const workItemsResponse = await httpPost(
     getAllWorkItemsUrl,
@@ -11,11 +13,13 @@ export async function getAllWorkItemsInBoards(): Promise<DevOpsJiraMapping[]> {
       query: `Select [System.Id] From WorkItems ORDER BY [System.CreatedDate] desc`,
     }
   );
-  return workItemsResponse.workItems.map((wi: any) => {
-    return {
-      id: wi.id,
-      jiraId: "",
-      commitIds: [],
-    };
-  }).slice(0, 300);
+  return workItemsResponse.workItems
+    .map((wi: any) => {
+      return {
+        id: wi.id,
+        jiraId: "",
+        commitIds: [],
+      };
+    })
+    .slice(0, limit);
 }

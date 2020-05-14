@@ -8,22 +8,16 @@ export async function getCommits(mappings: DevOpsJiraMapping[]) {
     batch = 30,
     end = start + batch;
   while (start < mappings.length) {
-    await getCommitsForBatch(mappings, start, end);
+    console.log(`Invoking getCommitsInBatch from ${start} to ${end}`);
+    await getCommitsInBatch(mappings.slice(start, end));
     start = end + 1;
     end = end + batch;
     await sleep(1000);
   }
 }
 
-async function getCommitsForBatch(
-  mappings: DevOpsJiraMapping[],
-  start: number,
-  end: number
-) {
-  console.log(`Invoking from ${start} to ${end}`);
-  const promises = mappings
-    .slice(start, end)
-    .map(async (x) => await getCommitForOneJiraIssue(x));
+async function getCommitsInBatch(mappings: DevOpsJiraMapping[]) {
+  const promises = mappings.map(async (x) => await getCommitForOneJiraIssue(x));
   await Promise.all(promises);
 }
 

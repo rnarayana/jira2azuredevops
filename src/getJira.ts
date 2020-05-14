@@ -11,30 +11,26 @@ export async function getJiraIdForWorkItems(
     batch = 30,
     end = start + batch;
   while (start < mappings.length) {
-    await getJiraIdForBatch(mappings, jiraIdFieldName, start, end);
+    console.log(`Invoking getJiraIdInBatch from ${start} to ${end}`);
+    await getJiraIdInBatch(mappings.slice(start, end), jiraIdFieldName);
     start = end + 1;
     end = end + batch;
     await sleep(1000);
   }
 }
 
-async function getJiraIdForBatch(
+async function getJiraIdInBatch(
   mappings: DevOpsJiraMapping[],
-  jiraIdFieldName: string,
-  start: number,
-  end: number
+  jiraIdFieldName: string
 ) {
-  console.log(`Invoking from ${start} to ${end}`);
-  const jiraMappingPromises = mappings
-    .slice(start, end)
-    .map(async (mapping) => {
-      const getWorkItemUrl = `${repoConfig.boardsWorkItemsUrl}/workitems/${mapping.id}?${repoConfig.azureApiVersion}`;
-      // await Promise.resolve();
-      const workItemResponse = await httpGet(
-        getWorkItemUrl,
-        repoConfig.devOpsHeader
-      );
-      mapping.jiraId = workItemResponse.fields[jiraIdFieldName];
-    });
+  const jiraMappingPromises = mappings.map(async (mapping) => {
+    const getWorkItemUrl = `${repoConfig.boardsWorkItemsUrl}/workitems/${mapping.id}?${repoConfig.azureApiVersion}`;
+    // await Promise.resolve();
+    const workItemResponse = await httpGet(
+      getWorkItemUrl,
+      repoConfig.devOpsHeader
+    );
+    mapping.jiraId = workItemResponse.fields[jiraIdFieldName];
+  });
   await Promise.all(jiraMappingPromises);
 }
