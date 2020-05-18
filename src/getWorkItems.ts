@@ -3,14 +3,13 @@ import * as repoConfig from "./repoConfig";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
 
 export async function getAllWorkItemsInBoards(
-  limit: number = 99999
 ): Promise<DevOpsJiraMapping[]> {
   const getAllWorkItemsUrl = `${repoConfig.boardsWorkItemsUrl}/wiql${repoConfig.azureApiVersion}`;
   const workItemsResponse = await httpPost(
     getAllWorkItemsUrl,
     repoConfig.devOpsHeader,
     {
-      query: `Select [System.Id] From WorkItems ORDER BY [System.CreatedDate] desc`,
+      query: `Select [System.Id] From WorkItems ORDER BY [System.Id] desc`,
     }
   );
   return workItemsResponse.workItems
@@ -20,6 +19,5 @@ export async function getAllWorkItemsInBoards(
         jiraId: "",
         commitIds: [],
       };
-    })
-    .slice(0, limit);
+    });
 }

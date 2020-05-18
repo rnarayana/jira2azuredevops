@@ -2,22 +2,9 @@ import { httpPatch, httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import config from "./appsettings.json";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
-import { sleep, logger } from "./utils";
+import { logger } from "./utils";
 
 export async function addCommits(mappings: DevOpsJiraMapping[]) {
-  let start = 0,
-    batch = 30,
-    end = start + batch;
-  while (start < mappings.length) {
-    logger.info(`Invoking addCommitsInBatch from ${start} to ${end}`);
-    await addCommitsInBatch(mappings.slice(start, end));
-    start = end + 1;
-    end = end + batch;
-    await sleep(1000);
-  }
-}
-
-async function addCommitsInBatch(mappings: DevOpsJiraMapping[]) {
   let header = {
     "Content-Type": "application/json-patch+json",
     Authorization: repoConfig.devOpsHeader.Authorization,
@@ -47,7 +34,7 @@ async function addCommitsInBatch(mappings: DevOpsJiraMapping[]) {
           });
         }
       }
-      
+
       if (body.length > 1) {
         logger.info(`Removing existing commit from ${mapping.id}!`);
         logger.debug(body);
