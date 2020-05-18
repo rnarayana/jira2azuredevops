@@ -50,7 +50,7 @@ async function migrate() {
     );
 
     logger.debug(" > Add the commit to Work Items.");
-    //await addCommits(devOpsJiraMapping);
+    await addCommits(devOpsJiraMapping);
 
     start = end;
     end = end + batch;

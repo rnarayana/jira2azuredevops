@@ -7,7 +7,7 @@ export async function getJiraIdForWorkItems(
   jiraIdFieldName: string
 ) {
   const jiraMappingPromises = mappings.map(async (mapping) => {
-    const getWorkItemUrl = `${repoConfig.boardsWorkItemsUrl}/workitems/${mapping.id}?${repoConfig.azureApiVersion}`;
+    const getWorkItemUrl = `${repoConfig.boardsWorkItemsUrl}/workitems/${mapping.id}${repoConfig.azureApiVersion}`;
 
     const workItemResponse = await httpGet(
       getWorkItemUrl,
