@@ -1,11 +1,12 @@
 import axios from "axios";
+import { logger } from "./utils";
 
 axios.interceptors.response.use(
   (response) => response,
   function (error) {
     if (error.response.status !== 200) {
-      console.log(`${error.response.data.message}`);
-      console.log(`${JSON.stringify(error.response.data.errorMessages)}`);
+      logger.error(`${error.response.data.message}`);
+      logger.error(`${JSON.stringify(error.response.data.errorMessages)}`);
     }
     return Promise.reject(error.response);
   }
@@ -23,7 +24,7 @@ async function httpGet(
     });
     return response.data;
   } catch (err) {
-    console.error(`Error invoking GET ${url}`);
+    logger.error(`Error invoking GET ${url}`);
   }
 }
 
@@ -32,7 +33,7 @@ async function httpPost(url: string, header: any, requestBody: any) {
     const response = await axios.post(url, requestBody, { headers: header });
     return response.data;
   } catch (err) {
-    console.error(`Error invoking POST ${url}`);
+    logger.error(`Error invoking POST ${url}`);
   }
 }
 
@@ -41,8 +42,7 @@ async function httpPatch(url: string, header: any, requestBody: any) {
     const response = await axios.patch(url, requestBody, { headers: header });
     return response.data;
   } catch (err) {
-    // console.error(err);
-    console.error(`Error invoking PATCH ${url}`);
+    logger.error(`Error invoking PATCH ${url}`);
   }
 }
 

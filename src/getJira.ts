@@ -1,7 +1,7 @@
 import { httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
-import { sleep } from "./utils";
+import { sleep, logger } from "./utils";
 
 export async function getJiraIdForWorkItems(
   mappings: DevOpsJiraMapping[],
@@ -11,7 +11,7 @@ export async function getJiraIdForWorkItems(
     batch = 30,
     end = start + batch;
   while (start < mappings.length) {
-    console.log(`Invoking getJiraIdInBatch from ${start} to ${end}`);
+    logger.info(`Invoking getJiraIdInBatch from ${start} to ${end}`);
     await getJiraIdInBatch(mappings.slice(start, end), jiraIdFieldName);
     start = end + 1;
     end = end + batch;

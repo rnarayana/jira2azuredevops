@@ -2,14 +2,14 @@ import { httpPatch, httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import config from "./appsettings.json";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
-import { sleep } from "./utils";
+import { sleep, logger } from "./utils";
 
 export async function addCommits(mappings: DevOpsJiraMapping[]) {
   let start = 0,
     batch = 30,
     end = start + batch;
   while (start < mappings.length) {
-    console.log(`Invoking addCommitsInBatch from ${start} to ${end}`);
+    logger.info(`Invoking addCommitsInBatch from ${start} to ${end}`);
     await addCommitsInBatch(mappings.slice(start, end));
     start = end + 1;
     end = end + batch;
@@ -49,8 +49,8 @@ async function addCommitsInBatch(mappings: DevOpsJiraMapping[]) {
       }
       
       if (body.length > 1) {
-        console.log(`Removing existing commit from ${mapping.id}!`);
-        console.log(body);
+        logger.info(`Removing existing commit from ${mapping.id}!`);
+        logger.debug(body);
         await httpPatch(wiPatchUrl, header, body);
       }
     }
@@ -73,8 +73,8 @@ async function addCommitsInBatch(mappings: DevOpsJiraMapping[]) {
     });
 
     if (body.length > 0) {
-      console.log(`Adding commit to ${mapping.id}!`);
-      console.log(body);
+      logger.info(`Adding commit to ${mapping.id}!`);
+      logger.debug(body);
       await httpPatch(wiPatchUrl, header, body);
     }
   });

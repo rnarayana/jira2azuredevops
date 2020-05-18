@@ -1,14 +1,14 @@
 import { httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
-import { sleep } from "./utils";
+import { sleep, logger } from "./utils";
 
 export async function getCommits(mappings: DevOpsJiraMapping[]) {
   let start = 0,
     batch = 30,
     end = start + batch;
   while (start < mappings.length) {
-    console.log(`Invoking getCommitsInBatch from ${start} to ${end}`);
+    logger.info(`Invoking getCommitsInBatch from ${start} to ${end}`);
     await getCommitsInBatch(mappings.slice(start, end));
     start = end + 1;
     end = end + batch;
