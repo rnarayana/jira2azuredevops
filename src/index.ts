@@ -21,7 +21,10 @@ async function migrate() {
 
   console.log("\n> 3. Get JIRA ID for each of the WorkItems");
   await getJiraIdForWorkItems(devOpsJiraMapping, jiraIdFieldName);
-  console.log(devOpsJiraMapping);
+  console.log("Work Items withour JIRA ID")
+  devOpsJiraMapping.filter(x => !x.jiraId).forEach(y => {
+    console.log(y.id)
+  });
 
   console.log("\n> 4. For each work item, query Jira for any linked commits");
   await getCommits(devOpsJiraMapping);
