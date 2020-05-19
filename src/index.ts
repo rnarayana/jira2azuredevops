@@ -55,6 +55,6 @@ async function migrate() {
 
     start = end;
     end = end + batch;
-    await sleep(5000);
+    await sleep(10_000);
   } while (start <= entireSet.length);
 }
