@@ -6,10 +6,19 @@ import { updateWorkItems } from "./updateWorkItem";
 import { sleep, Logger } from "./utils";
 
 (async () => {
-  Logger.start("Jira2DevOps");
-  Logger.info("> JIRA -> Azure DevOps Migration for CommitIDs");
-  await migrate();
-  Logger.info("Done.");
+  try{
+    Logger.start("Jira2DevOps");
+    Logger.info("> JIRA -> Azure DevOps Migration for CommitIDs");
+    await migrate();
+  }
+  catch {
+    Logger.info("Failed.");
+    process.exit(1);
+  }
+  finally {
+    Logger.info("Succeeded.");
+    process.exit();
+  }
 })();
 
 async function migrate() {
@@ -55,6 +64,6 @@ async function migrate() {
 
     start = end;
     end = end + batch;
-    await sleep(10_000);
+    await sleep(1000);
   } while (start <= entireSet.length);
 }
