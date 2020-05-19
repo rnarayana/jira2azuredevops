@@ -5,5 +5,7 @@ This contains REST API calls to JIRA and Azure DevOps to migrate commits and oth
 ## Steps to run
 
 npm install
+
 npm run compile
+
 npm run start
