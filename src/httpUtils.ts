@@ -19,6 +19,7 @@ async function httpGet(
   } catch (err) {
     Logger.error(`Error invoking GET ${url}`);
     Logger.error(err.response?.data ?? err);
+    throw err;
   }
 }
 
@@ -32,6 +33,7 @@ async function httpPost(url: string, header: any, requestBody: any) {
   } catch (err) {
     Logger.error(`Error invoking POST ${url}`);
     Logger.error(err.response?.data ?? err);
+    throw err;
   }
 }
 
@@ -45,6 +47,7 @@ async function httpPatch(url: string, header: any, requestBody: any) {
   } catch (err) {
     Logger.error(`Error invoking PATCH ${url}`);
     Logger.error(err.response?.data ?? err);
+    throw err;
   }
 }
 
