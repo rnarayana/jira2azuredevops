@@ -19,7 +19,7 @@ async function migrate() {
 
   Logger.info("2. Get all work item ids from DevOps");
   let start = 0,
-    batch = 100,
+    batch = 50,
     end = start + batch;
   let entireSet = await getAllWorkItemsInBoards();
   Logger.info(`Total work items = ${entireSet.length}`);
@@ -55,6 +55,6 @@ async function migrate() {
 
     start = end;
     end = end + batch;
-    await sleep(1000);
+    await sleep(5000);
   } while (start <= entireSet.length);
 }

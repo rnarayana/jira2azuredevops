@@ -1,6 +1,7 @@
 import { httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
+import { Logger } from "./utils";
 
 export async function getCommits(mappings: DevOpsJiraMapping[]) {
   const promises = mappings.map(async (x) => await getCommitForOneJiraIssue(x));
@@ -17,6 +18,18 @@ async function getCommitForOneJiraIssue(devopsJiraMapping: DevOpsJiraMapping) {
   if (!jiraIssue) {
     return;
   }
+
+  const fields = jiraIssue.fields;
+
+  // Map Regression from customfield_11620
+  if (fields["customfield_11620"]) {
+    devopsJiraMapping.regression = fields["customfield_11620"]?.value === "Yes";
+  }
+
+  // Map resolved date from resolution date for resolved issues, updated date for closed issues, and null for rest.
+  devopsJiraMapping.finishDate =
+    fields["resolutiondate"] ??
+    (fields["status"].name === "Closed" ? fields["updated"] : null);
 
   const jiraCommitUrl = `${repoConfig.jiraCommitUrl}${jiraIssue.id}`;
   const jiraCommits = await httpGet(jiraCommitUrl, repoConfig.jiraHeader);

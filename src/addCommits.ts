@@ -44,6 +44,25 @@ export async function addCommits(mappings: DevOpsJiraMapping[]) {
 
     // Add commits
     body = [];
+
+    if(mapping.regression) {
+      Logger.info(`Set Regression = true for ${mapping.id}`);
+      body.push({
+        "op": "add",
+		    "path": "/fields/Custom.Regression",
+		    "value": true
+      });
+    }
+
+    if(mapping.finishDate) {
+      Logger.info(`Set FinishDate = ${mapping.finishDate} for ${mapping.id}`);
+      body.push({
+        "op": "add",
+		    "path": "/fields/Microsoft.VSTS.Scheduling.FinishDate",
+		    "value": mapping.finishDate
+      });
+    }
+
     mapping.commitIds.forEach((commitId) => {
       const url = `vstfs:///Git/Commit/${config.devops.projectName}/${config.devops.repoName}/${commitId}`;
       body.push({

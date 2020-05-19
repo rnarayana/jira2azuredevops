@@ -2,7 +2,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 import { Logger } from "./utils";
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(axios, { retries: 10, retryDelay: axiosRetry.exponentialDelay });
 
 async function httpGet(
   url: string,
