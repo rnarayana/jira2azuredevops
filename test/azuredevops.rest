@@ -1,0 +1,61 @@
+@org = abc
+@project = JIRA-Migration
+@repoName = JIRA-Migration
+@baseUrl = https://dev.azure.com/{{org}}/{{project}}
+@contentType = Content-Type: application/json
+@username = abc
+@pat = xyz
+@header = Authorization: Basic {{username}}:{{pat}}
+@jiraKey = ABC-123
+@commitId = 123
+@witId = 2447
+
+###
+# @name getFields
+GET {{baseUrl}}/_apis/wit/fields?api-version=5.1
+{{header}}
+
+###
+# @name getAllWITs
+POST {{baseUrl}}/_apis/wit/wiql?api-version=5.1
+{{contentType}}
+{{header}}
+
+{
+  "query": "Select [System.Id] From WorkItems ORDER BY [System.CreatedDate] desc"
+}
+
+###
+# @name getWorkItem
+GET {{baseUrl}}/_apis/wit/workitems/3452?$expand=relations&api-version=5.1
+{{header}}
+
+###
+# @name verifyCommitExists
+GET {{baseUrl}}/_apis/git/repositories/{{project}}/commits/{{commitId}}?api-version=5.1
+{{header}}
+
+# ###
+# # @name verifyWorkItemExists
+# GET {{baseUrl}}/_apis/wit/workitems/{{witId}}?api-version=5.1
+# {{header}}
+
+###
+# @name addCommitToWIT
+PATCH {{baseUrl}}/_apis/wit/workitems/{{witId}}?api-version=5.1
+Content-Type: application/json-patch+json
+{{header}}
+
+[
+    {
+        "op": "add",
+        "path": "/relations/-",
+        "value": {
+            "rel": "ArtifactLink",
+            "url": "vstfs:///Git/Commit/{{project}}/{{repoName}}/c99d54f98c603fa1d46fe8f104d2537072dfcda9",
+            "attributes": {
+                "name": "Fixed in Commit",
+            }
+        }
+    }
+]

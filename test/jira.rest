@@ -1,0 +1,20 @@
+@baseUrl = https://jira.company.com
+@contentType = application/json
+@username = abc
+@password = passw0rd
+@header = Authorization: Basic {{username}}:{{password}}
+@jiraKey = 1234
+
+###
+# @name getIssue
+GET {{baseUrl}}/rest/api/latest/issue/{{jiraKey}}
+{{header}}
+
+@jiraId = {{getIssue.response.body.id}}
+
+###
+# @name getCommitsFromJira
+GET {{baseUrl}}/rest/dev-status/1.0/issue/detail?issueId={{jiraId}}&applicationType=stash&dataType=repository
+{{header}}
+
+@commitIds = {{getCommitsFromJira.response.body.detail.$[0].repositories.$[0].commits.$[0].id}}

@@ -2,7 +2,7 @@ import { httpPatch, httpGet } from "./httpUtils";
 import * as repoConfig from "./repoConfig";
 import config from "./appsettings.json";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
-import { logger } from "./utils";
+import { Logger } from "./utils";
 
 export async function addCommits(mappings: DevOpsJiraMapping[]) {
   let header = {
@@ -36,8 +36,8 @@ export async function addCommits(mappings: DevOpsJiraMapping[]) {
       }
 
       if (body.length > 1) {
-        logger.info(`Removing existing commit from ${mapping.id}!`);
-        logger.debug(body);
+        Logger.info(`Removing existing commit from ${mapping.id}!`);
+        Logger.debug(body);
         await httpPatch(wiPatchUrl, header, body);
       }
     }
@@ -60,8 +60,8 @@ export async function addCommits(mappings: DevOpsJiraMapping[]) {
     });
 
     if (body.length > 0) {
-      logger.info(`Adding commit to ${mapping.id}!`);
-      logger.debug(body);
+      Logger.info(`Adding commit to ${mapping.id}!`);
+      Logger.debug(body);
       await httpPatch(wiPatchUrl, header, body);
     }
   });

@@ -1,16 +1,8 @@
 import axios from "axios";
-import { logger } from "./utils";
+import axiosRetry from "axios-retry";
+import { Logger } from "./utils";
 
-axios.interceptors.response.use(
-  (response) => response,
-  function (error) {
-    if (error.response.status !== 200) {
-      logger.error(`${error.response.data.message}`);
-      logger.error(`${JSON.stringify(error.response.data.errorMessages)}`);
-    }
-    return Promise.reject(error.response);
-  }
-);
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
 async function httpGet(
   url: string,
@@ -21,28 +13,38 @@ async function httpGet(
     const response = await axios.get(url, {
       headers: header,
       params: params,
+      timeout: 60_000,
     });
     return response.data;
   } catch (err) {
-    logger.error(`Error invoking GET ${url}`);
+    Logger.error(`Error invoking GET ${url}`);
+    Logger.error(err.response?.data ?? err);
   }
 }
 
 async function httpPost(url: string, header: any, requestBody: any) {
   try {
-    const response = await axios.post(url, requestBody, { headers: header });
+    const response = await axios.post(url, requestBody, {
+      headers: header,
+      timeout: 60_000,
+    });
     return response.data;
   } catch (err) {
-    logger.error(`Error invoking POST ${url}`);
+    Logger.error(`Error invoking POST ${url}`);
+    Logger.error(err.response?.data ?? err);
   }
 }
 
 async function httpPatch(url: string, header: any, requestBody: any) {
   try {
-    const response = await axios.patch(url, requestBody, { headers: header });
+    const response = await axios.patch(url, requestBody, {
+      headers: header,
+      timeout: 60_000,
+    });
     return response.data;
   } catch (err) {
-    logger.error(`Error invoking PATCH ${url}`);
+    Logger.error(`Error invoking PATCH ${url}`);
+    Logger.error(err.response?.data ?? err);
   }
 }
 
