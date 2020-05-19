@@ -4,7 +4,7 @@ import config from "./appsettings.json";
 import { DevOpsJiraMapping } from "./devOpsJiraMapping";
 import { Logger } from "./utils";
 
-export async function addCommits(mappings: DevOpsJiraMapping[]) {
+export async function updateWorkItems(mappings: DevOpsJiraMapping[]) {
   let header = {
     "Content-Type": "application/json-patch+json",
     Authorization: repoConfig.devOpsHeader.Authorization,
@@ -44,42 +44,47 @@ export async function addCommits(mappings: DevOpsJiraMapping[]) {
 
     // Add commits
     body = [];
-
-    if(mapping.regression) {
+    let msg: string = "";
+    if (mapping.regression) {
+      msg += "regression";
       Logger.info(`Set Regression = true for ${mapping.id}`);
       body.push({
-        "op": "add",
-		    "path": "/fields/Custom.Regression",
-		    "value": true
+        op: "add",
+        path: "/fields/Custom.Regression",
+        value: true,
       });
     }
 
-    if(mapping.finishDate) {
+    if (mapping.finishDate) {
+      msg += " finishdate";
       Logger.info(`Set FinishDate = ${mapping.finishDate} for ${mapping.id}`);
       body.push({
-        "op": "add",
-		    "path": "/fields/Microsoft.VSTS.Scheduling.FinishDate",
-		    "value": mapping.finishDate
+        op: "add",
+        path: "/fields/Microsoft.VSTS.Scheduling.FinishDate",
+        value: mapping.finishDate,
       });
     }
 
-    mapping.commitIds.forEach((commitId) => {
-      const url = `vstfs:///Git/Commit/${config.devops.projectName}/${config.devops.repoName}/${commitId}`;
-      body.push({
-        op: "add",
-        path: "/relations/-",
-        value: {
-          rel: "ArtifactLink",
-          url: url,
-          attributes: {
-            name: "Fixed in Commit",
+    if (mapping.commitIds) {
+      msg += " commits";
+      mapping.commitIds.forEach((commitId) => {
+        const url = `vstfs:///Git/Commit/${config.devops.projectName}/${config.devops.repoName}/${commitId}`;
+        body.push({
+          op: "add",
+          path: "/relations/-",
+          value: {
+            rel: "ArtifactLink",
+            url: url,
+            attributes: {
+              name: "Fixed in Commit",
+            },
           },
-        },
+        });
       });
-    });
+    }
 
     if (body.length > 0) {
-      Logger.info(`Adding commit to ${mapping.id}!`);
+      Logger.info(`Updating workitem ${mapping.id} with ${msg}!`);
       Logger.debug(body);
       await httpPatch(wiPatchUrl, header, body);
     }

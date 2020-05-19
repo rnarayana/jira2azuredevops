@@ -2,7 +2,7 @@ import { getCommits } from "./getCommits";
 import { getAllWorkItemsInBoards } from "./getWorkItems";
 import { getJiraIdForWorkItems } from "./getJira";
 import { getAllFieldsInDevOps } from "./getAllFieldsInDevOps";
-import { addCommits } from "./addCommits";
+import { updateWorkItems } from "./updateWorkItem";
 import { sleep, Logger } from "./utils";
 
 (async () => {
@@ -50,8 +50,8 @@ async function migrate() {
       `${wiWithCommits.length}/${batch} work items have associated commits.`
     );
 
-    Logger.debug(" > Add the commit to Work Items.");
-    await addCommits(devOpsJiraMapping);
+    Logger.debug(" > Update Work Items with commits and other fields.");
+    await updateWorkItems(devOpsJiraMapping);
 
     start = end;
     end = end + batch;
